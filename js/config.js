@@ -1,12 +1,12 @@
 // Frontend Configuration
-// Change the API_URL here to point to your backend server
-// Examples:
-//  - Local development: http://localhost:5000
-//  - Production: https://api.yourdomain.com
-//  - Docker container: http://backend:5000
+// Uses relative path /api which is proxied by nginx to the backend
+// The nginx reverse proxy handles routing /api/* to http://coffee-backend:5000
 
-const API_URL = 'http://localhost:5000';
-const API_BASE_URL = `${API_URL}/api`;
+// For local development without reverse proxy, use:
+// const API_BASE_URL = 'http://localhost:5000/api';
 
-console.log('[CONFIG.JS] API_URL:', API_URL);
+// For production with nginx reverse proxy (Kubernetes):
+const API_BASE_URL = '/api';
+
 console.log('[CONFIG.JS] API_BASE_URL:', API_BASE_URL);
+console.log('[CONFIG.JS] Using relative path - nginx will proxy to backend');
