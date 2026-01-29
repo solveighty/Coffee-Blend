@@ -99,15 +99,25 @@ The development approach focused on:
 
 ---
 
-## 🔒 Usage Restrictions
+## 🐳 Docker & Kubernetes Ready
 
-🚫 **IMPORTANT NOTICE**
+This project is fully containerized and ready for Kubernetes deployment!
 
-This project is shared publicly for **portfolio and demonstration purposes only**.
+### Quick Start with Docker Compose
 
-- ❌ The project may not be reused or redistributed without permission  
-- ❌ Brand assets, ordering logic, and design are client-specific  
-- ❌ Commercial use by third parties is prohibited  
+```bash
+# 1. Start all services (PostgreSQL + Backend + Frontend)
+docker-compose up -d
+
+# 2. Initialize database
+./init-docker-db.sh
+
+# 3. Access the application
+# Frontend: http://localhost:8000
+# Backend API: http://localhost:5000
+```
+
+**For production deployment**, see [DOCKER.md](DOCKER.md) and [KUBERNETES.md](KUBERNETES.md)
 
 ---
 
