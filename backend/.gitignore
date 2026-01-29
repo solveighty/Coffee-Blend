@@ -12,3 +12,5 @@ yarn-error.log*
 *.swo
 *~
 .env.*.local
+package-lock.json
+yarn.lock

@@ -1,10 +1,18 @@
 // Handle appointment form submission
+console.log('[APPOINTMENT-FORM.JS] Script loaded');
+
 document.addEventListener('DOMContentLoaded', function() {
-  const appointmentForm = document.querySelector('.appointment-form');
+  console.log('[APPOINTMENT-FORM.JS] DOMContentLoaded fired');
   
-  if (appointmentForm) {
+  const appointmentForms = document.querySelectorAll('.appointment-form');
+  console.log('[APPOINTMENT-FORM.JS] Found', appointmentForms.length, 'appointment forms');
+  
+  appointmentForms.forEach((appointmentForm, index) => {
+    console.log('[APPOINTMENT-FORM.JS] Attaching event listener to form', index);
+    
     appointmentForm.addEventListener('submit', async function(e) {
       e.preventDefault();
+      console.log('[APPOINTMENT-FORM.JS] Form', index, 'submitted!');
 
       // Get form values
       const firstNameInput = appointmentForm.querySelector('input[placeholder="First Name"]');
@@ -14,32 +22,58 @@ document.addEventListener('DOMContentLoaded', function() {
       const phoneInput = appointmentForm.querySelector('input[placeholder="Phone"]');
       const messageInput = appointmentForm.querySelector('textarea');
       const submitBtn = appointmentForm.querySelector('input[type="submit"]');
+      
+      console.log('[APPOINTMENT-FORM.JS] Inputs found:', {
+        firstName: !!firstNameInput,
+        lastName: !!lastNameInput,
+        date: !!dateInput,
+        time: !!timeInput,
+        phone: !!phoneInput,
+        message: !!messageInput,
+        submit: !!submitBtn
+      });
+      
+      console.log('[APPOINTMENT-FORM.JS] Input values:', {
+        firstName: firstNameInput?.value,
+        lastName: lastNameInput?.value,
+        date: dateInput?.value,
+        time: timeInput?.value,
+        phone: phoneInput?.value,
+        message: messageInput?.value
+      });
 
       // Validate inputs
-      if (!firstNameInput.value.trim()) {
+      if (!firstNameInput || !firstNameInput.value.trim()) {
+        console.log('[APPOINTMENT-FORM.JS] Validation failed: firstName empty');
         showAlert('Please enter your first name', 'error');
         return;
       }
 
-      if (!lastNameInput.value.trim()) {
+      if (!lastNameInput || !lastNameInput.value.trim()) {
+        console.log('[APPOINTMENT-FORM.JS] Validation failed: lastName empty');
         showAlert('Please enter your last name', 'error');
         return;
       }
 
-      if (!dateInput.value.trim()) {
+      if (!dateInput || !dateInput.value.trim()) {
+        console.log('[APPOINTMENT-FORM.JS] Validation failed: date empty');
         showAlert('Please select a date', 'error');
         return;
       }
 
-      if (!timeInput.value.trim()) {
+      if (!timeInput || !timeInput.value.trim()) {
+        console.log('[APPOINTMENT-FORM.JS] Validation failed: time empty');
         showAlert('Please select a time', 'error');
         return;
       }
 
-      if (!phoneInput.value.trim()) {
+      if (!phoneInput || !phoneInput.value.trim()) {
+        console.log('[APPOINTMENT-FORM.JS] Validation failed: phone empty');
         showAlert('Please enter your phone number', 'error');
         return;
       }
+
+      console.log('[APPOINTMENT-FORM.JS] All validation passed, preparing data');
 
       // Prepare data
       const reservationData = {
@@ -51,16 +85,22 @@ document.addEventListener('DOMContentLoaded', function() {
         message: messageInput.value.trim() || null,
       };
 
+      console.log('[APPOINTMENT-FORM.JS] Reservation data:', reservationData);
+
       // Show loading state
       const originalValue = submitBtn.value;
       submitBtn.value = 'Sending...';
       submitBtn.disabled = true;
 
       try {
+        console.log('[APPOINTMENT-FORM.JS] Calling createReservation API');
         // Call API
         const response = await createReservation(reservationData);
 
+        console.log('[APPOINTMENT-FORM.JS] API response:', response);
+
         if (response.success) {
+          console.log('[APPOINTMENT-FORM.JS] Success! Showing alert');
           showAlert('Reservation created successfully!', 'success');
           appointmentForm.reset();
           
@@ -70,17 +110,18 @@ document.addEventListener('DOMContentLoaded', function() {
             jQuery('.appointment_time').timepicker('setTime', '');
           }
         } else {
+          console.log('[APPOINTMENT-FORM.JS] API error:', response.message);
           showAlert(response.message || 'Error creating reservation', 'error');
         }
       } catch (error) {
-        console.error('Error:', error);
+        console.error('[APPOINTMENT-FORM.JS] Catch error:', error);
         showAlert('Error creating reservation. Please try again.', 'error');
       } finally {
         submitBtn.value = originalValue;
         submitBtn.disabled = false;
       }
     });
-  }
+  });
 });
 
 // Helper function to format date for API (from datepicker format to YYYY-MM-DD)
@@ -117,6 +158,14 @@ function formatDateForAPI(dateString) {
 
 // Helper function to show alerts
 function showAlert(message, type = 'info') {
+  // For immediate user feedback, use native alert for success and error
+  if (type === 'success') {
+    alert(message);
+  } else if (type === 'error') {
+    alert('ERROR: ' + message);
+  }
+  
+  // Also try to show in the DOM
   // Remove existing alerts
   const existingAlerts = document.querySelectorAll('.reservation-alert');
   existingAlerts.forEach(alert => alert.remove());
@@ -132,10 +181,17 @@ function showAlert(message, type = 'info') {
     </button>
   `;
 
-  // Insert alert at the beginning of the form container or at the top
-  const formContainer = document.querySelector('.ftco-appointment');
-  if (formContainer) {
-    formContainer.insertBefore(alertDiv, formContainer.firstChild);
+  // Try multiple places to insert the alert
+  let container = document.querySelector('.ftco-appointment');
+  if (!container) {
+    container = document.querySelector('.appointment');
+  }
+  if (!container) {
+    container = document.querySelector('body');
+  }
+  
+  if (container) {
+    container.insertBefore(alertDiv, container.firstChild);
   }
 
   // Auto-dismiss success alerts after 5 seconds
