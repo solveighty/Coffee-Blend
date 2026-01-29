@@ -101,13 +101,14 @@
 		            		<label for="country">State / Country</label>
 		            		<div class="select-wrap">
 		                  <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-		                  <select name="" id="" class="form-control">
-		                  	<option value="">France</option>
-		                    <option value="">Italy</option>
-		                    <option value="">Philippines</option>
-		                    <option value="">South Korea</option>
-		                    <option value="">Hongkong</option>
-		                    <option value="">Japan</option>
+		                  <select name="country" id="country" class="form-control">
+		                  	<option value="">Select a country</option>
+		                  	<option value="France">France</option>
+		                    <option value="Italy">Italy</option>
+		                    <option value="Philippines">Philippines</option>
+		                    <option value="South Korea">South Korea</option>
+		                    <option value="Hongkong">Hongkong</option>
+		                    <option value="Japan">Japan</option>
 		                  </select>
 		                </div>
 		            	</div>
@@ -152,17 +153,12 @@
                 </div>
                 <div class="w-100"></div>
                 <div class="col-md-12">
-                	<div class="form-group mt-4">
-										<div class="radio">
-										  <label class="mr-3"><input type="radio" name="optradio"> Create an Account? </label>
-										  <label><input type="radio" name="optradio"> Ship to different address</label>
-										</div>
-									</div>
+                  <div class="form-group mt-4">
+                    <input type="submit" value="Place an order" class="btn btn-primary py-3 px-4">
+                  </div>
                 </div>
 	            </div>
-	          </form><!-- END -->
-
-
+	          </form><!-- END BILLING FORM -->
 
 	          <div class="row mt-5 pt-3 d-flex">
 	          	<div class="col-md-6 d-flex">
@@ -218,7 +214,6 @@
 											</div>
 										</div>
 									</div>
-									<p><a href="#"class="btn btn-primary py-3 px-4">Place an order</a></p>
 								</div>
 	          	</div>
 	          </div>
@@ -411,6 +406,8 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
   <script src="js/google-map.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/checkout-form.js"></script>
 
   <script>
 		$(document).ready(function(){

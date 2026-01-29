@@ -146,6 +146,92 @@ app.delete('/api/reservations/:id', async (req, res) => {
   }
 });
 
+// Create a new order
+app.post('/api/orders', async (req, res) => {
+  try {
+    const { firstName, lastName, country, streetAddress, apartment, city, postcode, phone, email, totalAmount, paymentMethod } = req.body;
+
+    // Validation
+    if (!firstName || !lastName || !country || !streetAddress || !city || !postcode || !phone || !email || !totalAmount) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Missing required fields' 
+      });
+    }
+
+    // Insert into database
+    const query = `
+      INSERT INTO orders (first_name, last_name, country, street_address, apartment, city, postcode, phone, email, total_amount, payment_method, status, created_at)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'pending', NOW())
+      RETURNING id, first_name, last_name, country, street_address, apartment, city, postcode, phone, email, total_amount, payment_method, status, created_at;
+    `;
+
+    const values = [firstName, lastName, country, streetAddress, apartment || null, city, postcode, phone, email, totalAmount, paymentMethod || 'card'];
+    const result = await pool.query(query, values);
+
+    res.status(201).json({
+      success: true,
+      message: 'Order created successfully',
+      data: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Error creating order:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error creating order',
+      error: error.message
+    });
+  }
+});
+
+// Get all orders
+app.get('/api/orders', async (req, res) => {
+  try {
+    const query = 'SELECT * FROM orders ORDER BY created_at DESC;';
+    const result = await pool.query(query);
+
+    res.status(200).json({
+      success: true,
+      data: result.rows
+    });
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching orders',
+      error: error.message
+    });
+  }
+});
+
+// Get order by ID
+app.get('/api/orders/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const query = 'SELECT * FROM orders WHERE id = $1;';
+    const result = await pool.query(query, [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Error fetching order:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching order',
+      error: error.message
+    });
+  }
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error('Unexpected error:', err);
