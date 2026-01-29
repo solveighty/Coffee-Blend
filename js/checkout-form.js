@@ -166,9 +166,10 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // API function to create order
+// Uses API_BASE_URL from config.js
 async function createOrder(orderData) {
   try {
-    const response = await fetch('http://localhost:5000/api/orders', {
+    const response = await fetch(`${API_BASE_URL}/orders`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

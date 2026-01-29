@@ -1,5 +1,8 @@
-// API Configuration
-const API_BASE_URL = 'http://localhost:5000/api';
+// API Configuration - Uses config.js
+// Make sure config.js is loaded BEFORE this script in your HTML
+
+console.log('[RESERVATION-API.JS] Script loaded');
+console.log('[RESERVATION-API.JS] Using API_BASE_URL:', API_BASE_URL);
 
 // Helper function to create a reservation
 async function createReservation(reservationData) {
